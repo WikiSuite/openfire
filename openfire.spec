@@ -1,8 +1,6 @@
-%define OPENFIRE_VERSION 4.0.3
-%define OPENFIRE_SOURCE v4.0.3.tar.gz
+%define OPENFIRE_VERSION 4.1.0
+%define OPENFIRE_SOURCE openfire_src_4_1_0.tar.gz
 %define OPENFIRE_RELEASE 1
-%define OPENFIRE_BUILDDATE Wed Nov 23 2016
-%define OPENFIRE_REPOVERSION FIXME
 
 Summary: Openfire XMPP Server
 Name: openfire
@@ -13,14 +11,7 @@ Source0: %{OPENFIRE_SOURCE}
 Source10: openfire.service  
 Source11: openfire-tmpfiles.conf
 Source12: openfire-systemd-start
-%ifnarch noarch
-Source1: %{JRE_BUNDLE}
-%endif
-%ifarch noarch
-# Note that epoch is set here to 1, this appears to be consistent with non-Redhat
-# jres as well due to an ancient problem with java-1.5.0-ibm jpackage RPM
 Requires: java-headless >= 1:1.7.0
-%endif
 Requires: systemd
 Requires(post): systemd
 Requires(preun): systemd
@@ -44,7 +35,7 @@ XMPP (Jabber) protocol. It has great performance, is easy to setup and use,
 and delivers an innovative feature set.
 
 %prep
-%setup -q -n Openfire-4.0.3
+%setup -q -n openfire_src
 
 %build
 cd build
@@ -59,12 +50,6 @@ mkdir -p $RPM_BUILD_ROOT%{prefix}
 mkdir -p -m 755 $RPM_BUILD_ROOT/var/run/openfire
 # Copy over the main install tree.
 cp -R target/openfire $RPM_BUILD_ROOT%{homedir}
-%ifnarch noarch
-# Set up distributed JRE
-pushd $RPM_BUILD_ROOT%{homedir}
-gzip -cd %{SOURCE1} | tar xvf -
-popd
-%endif
 # Set up the init script.
 install -D -m 644 %{SOURCE10} $RPM_BUILD_ROOT%{_unitdir}/openfire.service
 install -D -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{_tmpfilesdir}/openfire.conf
@@ -164,10 +149,7 @@ exit 0
 %attr(0644,root,root) %{_unitdir}/openfire.service
 %attr(0644,root,root) %{_tmpfilesdir}/openfire.conf
 %ghost %dir /var/run/openfire
-%ifnarch noarch
-%{homedir}/jre
-%endif
 
 %changelog
-* %{OPENFIRE_BUILDDATE} Igniterealtime Community <webmaster@igniterealtime.org> %{OPENFIRE_VERSION}-%{OPENFIRE_RELEASE}
-- Automated RPM build with git rev-parse --short HEAD of %{OPENFIRE_REPOVERSION}
+* Wed Dec 21 2016 eGloo <developer@egloo.ca> - 4.1.0-1
+First release
