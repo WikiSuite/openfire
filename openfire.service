@@ -6,10 +6,9 @@ After=syslog.target network.target
 Type=simple
 Environment="NAME="
 EnvironmentFile=-/etc/sysconfig/openfire
-ExecStart=/usr/share/openfire/bin/systemd-start
-User=daemon
-Group=daemon
-PIDFile=/var/run/openfire/openfire.pid
+ExecStart=/usr/sbin/openfire-start
+User=openfire
+Group=openfire
 
 [Install]
 WantedBy=multi-user.target

@@ -3,14 +3,8 @@
 # Get config.
 [ -f "/etc/sysconfig/openfire" ] && . /etc/sysconfig/openfire
 
-# If pid file path is not set in sysconfig, set to /var/run/openfire/openfire.pid.
-[ -z "$OPENFIRE_PIDFILE" ] && OPENFIRE_PIDFILE="/var/run/openfire/openfire.pid"
-
-# If a openfire home variable has not been specified, set to default
-[ -z "$OPENFIRE_HOME" ] && OPENFIRE_HOME="/usr/share/openfire"
-
-# If log path is not set in sysconfig, set to $OPENFIRE_HOME/logs.
-[ -z "$OPENFIRE_LOGDIR" ] && OPENFIRE_LOGDIR="${OPENFIRE_HOME}/logs"
+OPENFIRE_HOME="/usr/share/openfire"
+OPENFIRE_LOGDIR="$OPENFIRE_HOME/logs"
 
 # Attempt to locate java installation.
 if [ -z "$JAVA_HOME" ]; then
@@ -28,6 +22,7 @@ if [ -z "$JAVA_HOME" ]; then
 		done
 	fi
 fi
+
 JAVACMD="${JAVA_HOME}/bin/java"
 
 if [ ! -d "$JAVA_HOME" -o ! -x "$JAVACMD" ]; then

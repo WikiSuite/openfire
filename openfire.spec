@@ -1,21 +1,20 @@
-%define OPENFIRE_VERSION 4.1.0
-%define OPENFIRE_SOURCE openfire_src_4_1_0.tar.gz
-%define OPENFIRE_RELEASE 1
-
 Summary: Openfire XMPP Server
 Name: openfire
-Version: %{OPENFIRE_VERSION}
-Release: %{OPENFIRE_RELEASE}
+Version: 4.1.0
+Release: 1
 BuildRoot: %{_builddir}/%{name}-root
-Source0: %{OPENFIRE_SOURCE}
-Source10: openfire.service  
-Source11: openfire-tmpfiles.conf
-Source12: openfire-systemd-start
+Source0: openfire_src_4_1_0.tar.gz
+Source1: openfire-start
+Source2: openfire.service
+Source3: openfire-tmpfiles.conf
+Source4: openfire-sysconfig
 Requires: java-headless >= 1:1.7.0
 Requires: systemd
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
+Requires(pre): /usr/sbin/useradd
+Requires(pre): /usr/sbin/groupadd
 BuildRequires: ant
 Group: Applications/Communications
 Vendor: Igniterealtime Community
@@ -24,8 +23,7 @@ License: Apache license v2.0
 AutoReqProv: no
 URL: http://www.igniterealtime.org/
 
-%define prefix /usr/share
-%define homedir %{prefix}/openfire
+%define homedir %{_datadir}/openfire
 # couldn't find another way to disable the brp-java-repack-jars which was called in __os_install_post
 %define __os_install_post %{nil}
 
@@ -46,33 +44,35 @@ cd ..
 %install
 # Prep the install location.
 rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT%{prefix}
+mkdir -p $RPM_BUILD_ROOT%{_sbindir}
+mkdir -p $RPM_BUILD_ROOT%{_datadir}
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 mkdir -p -m 755 $RPM_BUILD_ROOT/var/run/openfire
+mkdir -p -m 755 $RPM_BUILD_ROOT/var/log/openfire
+
 # Copy over the main install tree.
 cp -R target/openfire $RPM_BUILD_ROOT%{homedir}
-# Set up the init script.
-install -D -m 644 %{SOURCE10} $RPM_BUILD_ROOT/%{_unitdir}/openfire.service
-install -D -m 644 %{SOURCE11} $RPM_BUILD_ROOT/%{_tmpfilesdir}/openfire.conf
-install -m 755 %{SOURCE12} $RPM_BUILD_ROOT%{homedir}/bin/systemd-start
+
+# Startup script, systemd, and tmpfiles.
+install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/openfire-start
+install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_unitdir}/openfire.service
+install -D -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_tmpfilesdir}/openfire.conf
+install -D -m 644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/openfire
+
 # Make the startup script executable.
 chmod 755 $RPM_BUILD_ROOT%{homedir}/bin/openfire.sh
-# Set up the sysconfig file.
-mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
-cp $RPM_BUILD_ROOT%{homedir}/bin/extra/redhat/openfire-sysconfig $RPM_BUILD_ROOT/etc/sysconfig/openfire
-# Copy over the documentation
-cp -R documentation/docs $RPM_BUILD_ROOT%{homedir}/documentation
-cp documentation/dist/changelog.html $RPM_BUILD_ROOT%{homedir}/
-cp documentation/dist/LICENSE.html $RPM_BUILD_ROOT%{homedir}/
-cp documentation/dist/README.html $RPM_BUILD_ROOT%{homedir}/
+
 # Copy over the i18n files
 cp -R src/i18n $RPM_BUILD_ROOT%{homedir}/resources/i18n
-# Make sure scripts are executable
-# Note: these files are deleted below
-# chmod 755 $RPM_BUILD_ROOT%{homedir}/bin/extra/openfired
-# chmod 755 $RPM_BUILD_ROOT%{homedir}/bin/extra/redhat-postinstall.sh
+
 # Move over the embedded db viewer pieces
 mv $RPM_BUILD_ROOT%{homedir}/bin/extra/embedded-db.rc $RPM_BUILD_ROOT%{homedir}/bin
 mv $RPM_BUILD_ROOT%{homedir}/bin/extra/embedded-db-viewer.sh $RPM_BUILD_ROOT%{homedir}/bin
+
+# Add symlink for log files
+rmdir $RPM_BUILD_ROOT%{homedir}/logs
+ln -sf /var/log/openfire $RPM_BUILD_ROOT%{homedir}/logs
+
 # We don't really need any of these things.
 rm -rf $RPM_BUILD_ROOT%{homedir}/bin/extra
 rm -f $RPM_BUILD_ROOT%{homedir}/bin/*.bat
@@ -83,73 +83,47 @@ rm -f $RPM_BUILD_ROOT%{homedir}/lib/*.dll
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+/usr/sbin/useradd -c "Openfire" -s /sbin/nologin -r -d %{homedir} openfire 2> /dev/null
+exit 0
+
 %preun
 %systemd_preun openfire.service
-
-# Force a happy exit even if openfire shutdown script didn't exit cleanly.
 exit 0
 
 %postun
 %systemd_postun_with_restart openfire.service
-
-# Force a happy exit even if openfire shutdown script didn't exit cleanly.
 exit 0
 
 %post
 %systemd_post openfire.service
-
-# Force a happy exit even if openfire condrestart script didn't exit cleanly.
 exit 0
 
 %files
-%defattr(-,daemon,daemon)
-%attr(750, daemon, daemon) %dir %{homedir}
-%dir %{homedir}/bin
-%{homedir}/bin/openfire.sh
-%{homedir}/bin/openfirectl
-%{homedir}/bin/systemd-start
-%config(noreplace) %{homedir}/bin/embedded-db.rc
-%{homedir}/bin/embedded-db-viewer.sh
-%dir %{homedir}/conf
-%config(noreplace) %{homedir}/conf/openfire.xml
-%config(noreplace) %{homedir}/conf/security.xml
-%config(noreplace) %{homedir}/conf/crowd.properties
-%dir %{homedir}/lib
-%{homedir}/lib/*.jar
-%config(noreplace) %{homedir}/lib/log4j.xml
-%dir %{homedir}/logs
-%dir %{homedir}/plugins
-%{homedir}/plugins/search.jar
-%dir %{homedir}/plugins/admin
-%{homedir}/plugins/admin/*
-%dir %{homedir}/resources
-%dir %{homedir}/resources/database
-%{homedir}/resources/database/*.sql
-%dir %{homedir}/resources/database/upgrade
-%dir %{homedir}/resources/database/upgrade/*
-%{homedir}/resources/database/upgrade/*/*
-%dir %{homedir}/resources/i18n
-%{homedir}/resources/i18n/*
-%dir %{homedir}/resources/nativeAuth
-%dir %{homedir}/resources/nativeAuth/linux-i386
-%{homedir}/resources/nativeAuth/linux-i386/*
-%dir %{homedir}/resources/security
-%dir %{homedir}/resources/spank
-%{homedir}/resources/spank/index.html
-%dir %{homedir}/resources/spank/WEB-INF
-%{homedir}/resources/spank/WEB-INF/web.xml
-%config(noreplace) %{homedir}/resources/security/keystore
-%config(noreplace) %{homedir}/resources/security/truststore
-%config(noreplace) %{homedir}/resources/security/client.truststore
-%doc %{homedir}/documentation
-%doc %{homedir}/LICENSE.html 
-%doc %{homedir}/README.html 
-%doc %{homedir}/changelog.html
+%defattr(-,root,root)
+# Docs
+%doc documentation/dist/README.html documentation/dist/LICENSE.html documentation/dist/changelog.html
+# Home directory must be writeable by openfire
+%{homedir}
+%attr(-,openfire,openfire) %dir %{homedir}
+# Openfire writeable directories
+%attr(-,openfire,openfire) %{homedir}/conf
+%attr(-,openfire,openfire) %{homedir}/plugins
+%attr(-,openfire,openfire) %{homedir}/resources/security
+# Openfire writeable files
+%attr(-,openfire,openfire) %config(noreplace) %{homedir}/bin/embedded-db.rc
+%attr(-,openfire,openfire) %config(noreplace) %{homedir}/lib/log4j.xml
+# System files
 %config(noreplace) %{_sysconfdir}/sysconfig/openfire
-%attr(0644,root,root) /%{_unitdir}/openfire.service
-%attr(0644,root,root) /%{_tmpfilesdir}/openfire.conf
-%ghost %dir /var/run/openfire
+%attr(0755,openfire,openfire) %dir /var/run/openfire
+%attr(0755,openfire,openfire) %dir /var/log/openfire
+%{_unitdir}/openfire.service
+%{_tmpfilesdir}/openfire.conf
+%{_sbindir}/openfire-start
 
 %changelog
+* Wed Dec 21 2016 eGloo <developer@egloo.ca> - 4.1.0-2
+Updated to match upstream distro standards
+
 * Wed Dec 21 2016 eGloo <developer@egloo.ca> - 4.1.0-1
 First release
