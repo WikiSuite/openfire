@@ -1,0 +1,15 @@
+[Unit]
+Description=Openfire XMPP server
+After=syslog.target network.target
+
+[Service]
+Type=simple
+Environment="NAME="
+EnvironmentFile=-/etc/sysconfig/openfire
+ExecStart=/usr/share/openfire/bin/systemd-start
+User=daemon
+Group=daemon
+PIDFile=/var/run/openfire/openfire.pid
+
+[Install]
+WantedBy=multi-user.target
