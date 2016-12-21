@@ -16,13 +16,13 @@ Requires: systemd
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
+BuildRequires: ant
 Group: Applications/Communications
 Vendor: Igniterealtime Community
 Packager: Igniterealtime Community
 License: Apache license v2.0
 AutoReqProv: no
 URL: http://www.igniterealtime.org/
-
 
 %define prefix /usr/share
 %define homedir %{prefix}/openfire
@@ -51,8 +51,8 @@ mkdir -p -m 755 $RPM_BUILD_ROOT/var/run/openfire
 # Copy over the main install tree.
 cp -R target/openfire $RPM_BUILD_ROOT%{homedir}
 # Set up the init script.
-install -D -m 644 %{SOURCE10} $RPM_BUILD_ROOT%{_unitdir}/openfire.service
-install -D -m 644 %{SOURCE11} $RPM_BUILD_ROOT%{_tmpfilesdir}/openfire.conf
+install -D -m 644 %{SOURCE10} $RPM_BUILD_ROOT/%{_unitdir}/openfire.service
+install -D -m 644 %{SOURCE11} $RPM_BUILD_ROOT/%{_tmpfilesdir}/openfire.conf
 install -m 755 %{SOURCE12} $RPM_BUILD_ROOT%{homedir}/bin/systemd-start
 # Make the startup script executable.
 chmod 755 $RPM_BUILD_ROOT%{homedir}/bin/openfire.sh
@@ -146,8 +146,8 @@ exit 0
 %doc %{homedir}/README.html 
 %doc %{homedir}/changelog.html
 %config(noreplace) %{_sysconfdir}/sysconfig/openfire
-%attr(0644,root,root) %{_unitdir}/openfire.service
-%attr(0644,root,root) %{_tmpfilesdir}/openfire.conf
+%attr(0644,root,root) /%{_unitdir}/openfire.service
+%attr(0644,root,root) /%{_tmpfilesdir}/openfire.conf
 %ghost %dir /var/run/openfire
 
 %changelog
