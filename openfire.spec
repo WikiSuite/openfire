@@ -23,6 +23,7 @@ License: Apache license v2.0
 AutoReqProv: no
 URL: http://www.igniterealtime.org/
 
+
 %define prefix /usr/share
 %define homedir %{prefix}/openfire
 # couldn't find another way to disable the brp-java-repack-jars which was called in __os_install_post
