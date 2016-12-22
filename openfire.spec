@@ -117,8 +117,8 @@ exit 0
 %config(noreplace) %{_sysconfdir}/sysconfig/openfire
 %attr(0755,openfire,openfire) %dir /var/run/openfire
 %attr(0755,openfire,openfire) %dir /var/log/openfire
-%{_unitdir}/openfire.service
-%{_tmpfilesdir}/openfire.conf
+/%{_unitdir}/openfire.service
+/%{_tmpfilesdir}/openfire.conf
 %{_sbindir}/openfire-start
 
 %changelog
