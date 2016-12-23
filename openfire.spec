@@ -55,8 +55,8 @@ cp -R target/openfire $RPM_BUILD_ROOT%{homedir}
 
 # Startup script, systemd, and tmpfiles.
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/openfire-start
-install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_unitdir}/openfire.service
-install -D -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_tmpfilesdir}/openfire.conf
+install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/systemd/system/openfire.service
+install -D -m 644 %{SOURCE3} $RPM_BUILD_ROOT/usr/lib/tmpfiles.d/openfire.conf
 install -D -m 644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/openfire
 
 # Make the startup script executable.
@@ -117,11 +117,14 @@ exit 0
 %config(noreplace) %{_sysconfdir}/sysconfig/openfire
 %attr(0755,openfire,openfire) %dir /var/run/openfire
 %attr(0755,openfire,openfire) %dir /var/log/openfire
-/%{_unitdir}/openfire.service
-/%{_tmpfilesdir}/openfire.conf
+/usr/lib/systemd/system/openfire.service
+/usr/lib/tmpfiles.d/openfire.conf
 %{_sbindir}/openfire-start
 
 %changelog
+* Fri Dec 23 2016 eGloo <developer@egloo.ca> - 4.1.0-3
+Avoided using _tmpfilesdir and _unitdir macros
+
 * Wed Dec 21 2016 eGloo <developer@egloo.ca> - 4.1.0-2
 Updated to match upstream distro standards
 
