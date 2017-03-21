@@ -1,9 +1,9 @@
 Summary: Openfire XMPP Server
 Name: openfire
-Version: 4.1.1
+Version: 4.1.3
 Release: 1
 BuildRoot: %{_builddir}/%{name}-root
-Source0: openfire_src_4_1_1.tar.gz
+Source0: openfire_src_4_1_3.tar.gz
 Source1: openfire-start
 Source2: openfire.service
 Source3: openfire-tmpfiles.conf
@@ -80,6 +80,10 @@ rm -rf $RPM_BUILD_ROOT%{homedir}/resources/nativeAuth/osx-ppc
 rm -rf $RPM_BUILD_ROOT%{homedir}/resources/nativeAuth/win32-x86
 rm -f $RPM_BUILD_ROOT%{homedir}/lib/*.dll
 
+# Plugins are managed via Openfire, not RPM
+mkdir -p $RPM_BUILD_ROOT%{homedir}/plugins_default
+mv $RPM_BUILD_ROOT%{homedir}/plugins/* $RPM_BUILD_ROOT%{homedir}/plugins_default
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -109,6 +113,7 @@ exit 0
 # Openfire writeable directories
 %attr(-,openfire,openfire) %{homedir}/conf
 %attr(-,openfire,openfire) %{homedir}/plugins
+%attr(-,openfire,openfire) %{homedir}/plugins_default
 %attr(-,openfire,openfire) %{homedir}/resources/security
 # Openfire writeable files
 %attr(-,openfire,openfire) %config(noreplace) %{homedir}/bin/embedded-db.rc
