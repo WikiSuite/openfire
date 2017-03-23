@@ -1,7 +1,7 @@
 Summary: Openfire XMPP Server
 Name: openfire
 Version: 4.1.3
-Release: 2
+Release: 3
 BuildRoot: %{_builddir}/%{name}-root
 Source0: openfire_src_4_1_3.tar.gz
 Source1: openfire-start
@@ -18,6 +18,7 @@ Requires(postun): systemd
 Requires(pre): /usr/sbin/useradd
 Requires(pre): /usr/sbin/groupadd
 BuildRequires: ant
+BuildRequires: systemd
 Group: Applications/Communications
 Vendor: Igniterealtime Community
 Packager: Igniterealtime Community
