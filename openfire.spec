@@ -1,7 +1,7 @@
 Summary: Openfire XMPP Server
 Name: openfire
 Version: 4.1.5
-Release: 1
+Release: 2
 BuildRoot: %{_builddir}/%{name}-root
 Source0: openfire_src_4_1_5.tar.gz
 Source1: openfire-start
@@ -136,11 +136,19 @@ exit 0
 %config(noreplace) %{_sysconfdir}/sysconfig/openfire
 %attr(0755,openfire,openfire) %dir /var/run/openfire
 %attr(0755,openfire,openfire) %dir /var/log/openfire
+# Config files
+%attr(-,openfire,openfire) %config(noreplace) %{homedir}/conf/crowd.properties
+%attr(-,openfire,openfire) %config(noreplace) %{homedir}/conf/openfire.xml
+%attr(-,openfire,openfire) %config(noreplace) %{homedir}/conf/security.xml
+
 /usr/lib/systemd/system/openfire.service
 /usr/lib/tmpfiles.d/openfire.conf
 %{_sbindir}/openfire-start
 
 %changelog
+* Mon Aug 14 2017 eGloo <developer@egloo.ca> - 4.1.5-2
+4.1.5 Build
+
 * Fri Dec 23 2016 eGloo <developer@egloo.ca> - 4.1.0-3
 Avoided using _tmpfilesdir and _unitdir macros
 
