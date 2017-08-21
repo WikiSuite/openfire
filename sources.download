@@ -1,3 +1,4 @@
 f24c34ec2673dce0f9321237538e954ea767535ed7f17a2574e344170555de5b  openfire_src_4_1_5.tar.gz https://download.igniterealtime.org/openfire/openfire_src_4_1_5.tar.gz
-ddfca0e830dbf787fc0665b2067a23487ac85d40c6270bcc5c7edbd28d7581cd  ofmeet.jar https://download.igniterealtime.org/openfire/plugins/ofmeet.jar
+d48ff69799dfb10218f9f54df659539135a0f368febce367bcf199fa424e823e  ofmeet.jar https://github.com/igniterealtime/ofmeet-openfire-plugin/releases/download/v0.9.2/ofmeet.jar
+502a2411ab0c2e2d7ccf66ffa0d77dc3d87fd8aa87bc711e85dff19f148ce3a7  offocus.jar https://github.com/igniterealtime/ofmeet-openfire-plugin/releases/download/v0.9.2/offocus.jar
 e79422d6c97c149638442b02282a1718781b4161b8332c42079fdf03ec1f3438  fastpath.jar https://download.igniterealtime.org/openfire/plugins/fastpath.jar

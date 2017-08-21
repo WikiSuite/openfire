@@ -1,7 +1,7 @@
 Summary: Openfire XMPP Server
 Name: openfire
 Version: 4.1.5
-Release: 2
+Release: 3
 BuildRoot: %{_builddir}/%{name}-root
 Source0: openfire_src_4_1_5.tar.gz
 Source1: openfire-start
@@ -9,7 +9,8 @@ Source2: openfire.service
 Source3: openfire-tmpfiles.conf
 Source4: openfire-sysconfig
 Source100: ofmeet.jar
-Source101: fastpath.jar
+Source101: offocus.jar
+Source102: fastpath.jar
 Requires: java-headless >= 1:1.7.0
 Requires: systemd
 Requires(post): systemd
@@ -90,6 +91,7 @@ mv $RPM_BUILD_ROOT%{homedir}/plugins/* $RPM_BUILD_ROOT%{homedir}/plugins_default
 # 3rd party jar files go straight to plugins folder
 install -D -m 644 %{SOURCE100} $RPM_BUILD_ROOT%{homedir}/plugins
 install -D -m 644 %{SOURCE101} $RPM_BUILD_ROOT%{homedir}/plugins
+install -D -m 644 %{SOURCE102} $RPM_BUILD_ROOT%{homedir}/plugins
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -146,6 +148,10 @@ exit 0
 %{_sbindir}/openfire-start
 
 %changelog
+* Mon Aug 21 2017 eGloo <developer@egloo.ca> - 4.1.5-3
+Added offocus plugin
+Updated ofmeet plugin to 0.9.2
+
 * Mon Aug 14 2017 eGloo <developer@egloo.ca> - 4.1.5-2
 4.1.5 Build
 
