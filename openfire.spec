@@ -1,7 +1,7 @@
 Summary: Openfire XMPP Server
 Name: openfire
 Version: 4.1.5
-Release: 3
+Release: 4
 BuildRoot: %{_builddir}/%{name}-root
 Source0: openfire_src_4_1_5.tar.gz
 Source1: openfire-start
@@ -84,10 +84,6 @@ rm -rf $RPM_BUILD_ROOT%{homedir}/resources/nativeAuth/osx-ppc
 rm -rf $RPM_BUILD_ROOT%{homedir}/resources/nativeAuth/win32-x86
 rm -f $RPM_BUILD_ROOT%{homedir}/lib/*.dll
 
-# Plugins are managed via Openfire, not RPM
-mkdir -p $RPM_BUILD_ROOT%{homedir}/plugins_default
-mv $RPM_BUILD_ROOT%{homedir}/plugins/* $RPM_BUILD_ROOT%{homedir}/plugins_default
-
 # 3rd party jar files go straight to plugins folder
 install -D -m 644 %{SOURCE100} $RPM_BUILD_ROOT%{homedir}/plugins
 install -D -m 644 %{SOURCE101} $RPM_BUILD_ROOT%{homedir}/plugins
@@ -108,14 +104,6 @@ exit 0
 %systemd_postun_with_restart openfire.service
 exit 0
 
-%post
-if [ ! -d /usr/share/openfire/plugins/admin ]; then
-    cp -a /usr/share/openfire/plugins_default/admin /usr/share/openfire/plugins/
-fi
-if [ ! -e /usr/share/openfire/plugins/search.jar ]; then
-    cp -a /usr/share/openfire/plugins_default/search.jar /usr/share/openfire/plugins/
-fi
-
 %systemd_post openfire.service
 exit 0
 
@@ -129,7 +117,6 @@ exit 0
 # Openfire writeable directories
 %attr(-,openfire,openfire) %{homedir}/conf
 %attr(-,openfire,openfire) %{homedir}/plugins
-%attr(-,openfire,openfire) %{homedir}/plugins_default
 %attr(-,openfire,openfire) %{homedir}/resources/security
 # Openfire writeable files
 %attr(-,openfire,openfire) %config(noreplace) %{homedir}/bin/embedded-db.rc
@@ -148,6 +135,9 @@ exit 0
 %{_sbindir}/openfire-start
 
 %changelog
+* Tue Aug 22 2017 eGloo <developer@egloo.ca> - 4.1.5-4
+Changed plugin handling on upgrades
+
 * Mon Aug 21 2017 eGloo <developer@egloo.ca> - 4.1.5-3
 Added offocus plugin
 Updated ofmeet plugin to 0.9.2
