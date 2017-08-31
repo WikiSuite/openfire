@@ -11,7 +11,7 @@ Source4: openfire-sysconfig
 Source100: ofmeet.jar
 Source101: offocus.jar
 Source102: fastpath.jar
-Requires: java-headless >= 1:1.7.0
+Requires: java-headless >= 1:1.8.0
 Requires: systemd
 Requires(post): systemd
 Requires(preun): systemd
