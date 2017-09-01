@@ -1,7 +1,7 @@
 Summary: Openfire XMPP Server
 Name: openfire
 Version: 4.1.5
-Release: 4
+Release: 5
 BuildRoot: %{_builddir}/%{name}-root
 Source0: openfire_src_4_1_5.tar.gz
 Source1: openfire-start
@@ -129,12 +129,18 @@ exit 0
 %attr(-,openfire,openfire) %config(noreplace) %{homedir}/conf/crowd.properties
 %attr(-,openfire,openfire) %config(noreplace) %{homedir}/conf/openfire.xml
 %attr(-,openfire,openfire) %config(noreplace) %{homedir}/conf/security.xml
-
+%config(noreplace) %{homedir}/resources/security/keystore
+%config(noreplace) %{homedir}/resources/security/truststore
+%config(noreplace) %{homedir}/resources/security/client.truststore
+# Other
 /usr/lib/systemd/system/openfire.service
 /usr/lib/tmpfiles.d/openfire.conf
 %{_sbindir}/openfire-start
 
 %changelog
+* Thu Aug 31 2017 eGloo <developer@egloo.ca> - 4.1.5-5
+Updated spec file manifest
+
 * Tue Aug 22 2017 eGloo <developer@egloo.ca> - 4.1.5-4
 Changed plugin handling on upgrades
 
