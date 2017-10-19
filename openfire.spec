@@ -176,6 +176,7 @@ exit 0
 
 %changelog
 * Thu Oct 19 2017 eGloo <developer@egloo.ca> - 4.1.6-1
+Harmonized spec file with upstream
 Added logrotate
 Updated to 4.1.6
 
