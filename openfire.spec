@@ -27,9 +27,11 @@ License: Apache license v2.0
 AutoReqProv: no
 URL: http://www.igniterealtime.org/
 
-%define homedir %{_datadir}/openfire
+%define prefix %{_datadir}
+%define homedir %{prefix}/openfire
 # couldn't find another way to disable the brp-java-repack-jars which was called in __os_install_post
 %define __os_install_post %{nil}
+%define debug_package %{nil}
 
 %description
 Openfire is a leading Open Source, cross-platform IM server based on the
@@ -48,24 +50,27 @@ cd ..
 %install
 # Prep the install location.
 rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT%{_sbindir}
-mkdir -p $RPM_BUILD_ROOT%{_datadir}
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-mkdir -p -m 755 $RPM_BUILD_ROOT/var/run/openfire
-mkdir -p -m 755 $RPM_BUILD_ROOT/var/log/openfire
-
+mkdir -p $RPM_BUILD_ROOT%{prefix}
 # Copy over the main install tree.
 cp -R target/openfire $RPM_BUILD_ROOT%{homedir}
 
-# Startup script, systemd, and tmpfiles.
+mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/openfire-start
+
+# Set up the init script.
+mkdir -p -m 755 $RPM_BUILD_ROOT/var/run/openfire
 install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/systemd/system/openfire.service
 install -D -m 644 %{SOURCE3} $RPM_BUILD_ROOT/usr/lib/tmpfiles.d/openfire.conf
+
+# Set up the sysconfig file.
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 install -D -m 644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/openfire
 
 # Make the startup script executable.
 chmod 755 $RPM_BUILD_ROOT%{homedir}/bin/openfire.sh
 
+# Copy over the documentation
+# This is done via the %doc in the file manifest
 # Copy over the i18n files
 cp -R src/i18n $RPM_BUILD_ROOT%{homedir}/resources/i18n
 
@@ -74,8 +79,14 @@ mv $RPM_BUILD_ROOT%{homedir}/bin/extra/embedded-db.rc $RPM_BUILD_ROOT%{homedir}/
 mv $RPM_BUILD_ROOT%{homedir}/bin/extra/embedded-db-viewer.sh $RPM_BUILD_ROOT%{homedir}/bin
 
 # Add symlink for log files
+mkdir -p -m 755 $RPM_BUILD_ROOT/var/log/openfire
 rmdir $RPM_BUILD_ROOT%{homedir}/logs
 ln -sf /var/log/openfire $RPM_BUILD_ROOT%{homedir}/logs
+
+# 3rd party jar files go straight to plugins folder
+install -D -m 644 %{SOURCE100} $RPM_BUILD_ROOT%{homedir}/plugins
+install -D -m 644 %{SOURCE101} $RPM_BUILD_ROOT%{homedir}/plugins
+install -D -m 644 %{SOURCE102} $RPM_BUILD_ROOT%{homedir}/plugins
 
 # We don't really need any of these things.
 rm -rf $RPM_BUILD_ROOT%{homedir}/bin/extra
@@ -83,11 +94,6 @@ rm -f $RPM_BUILD_ROOT%{homedir}/bin/*.bat
 rm -rf $RPM_BUILD_ROOT%{homedir}/resources/nativeAuth/osx-ppc
 rm -rf $RPM_BUILD_ROOT%{homedir}/resources/nativeAuth/win32-x86
 rm -f $RPM_BUILD_ROOT%{homedir}/lib/*.dll
-
-# 3rd party jar files go straight to plugins folder
-install -D -m 644 %{SOURCE100} $RPM_BUILD_ROOT%{homedir}/plugins
-install -D -m 644 %{SOURCE101} $RPM_BUILD_ROOT%{homedir}/plugins
-install -D -m 644 %{SOURCE102} $RPM_BUILD_ROOT%{homedir}/plugins
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -108,34 +114,59 @@ exit 0
 exit 0
 
 %files
-%defattr(-,root,root)
-# Docs
-%doc documentation/dist/README.html documentation/dist/LICENSE.html documentation/dist/changelog.html
-# Home directory must be writeable by openfire
-%{homedir}
-%attr(-,openfire,openfire) %dir %{homedir}
-# Openfire writeable directories
-%attr(-,openfire,openfire) %{homedir}/conf
-%attr(-,openfire,openfire) %{homedir}/plugins
-%attr(-,openfire,openfire) %{homedir}/resources/security
-# Openfire writeable files
-%attr(-,openfire,openfire) %config(noreplace) %{homedir}/bin/embedded-db.rc
-%attr(-,openfire,openfire) %config(noreplace) %{homedir}/lib/log4j.xml
-# System files
-%config(noreplace) %{_sysconfdir}/sysconfig/openfire
-%attr(0755,openfire,openfire) %dir /var/run/openfire
-%attr(0755,openfire,openfire) %dir /var/log/openfire
-# Config files
-%attr(-,openfire,openfire) %config(noreplace) %{homedir}/conf/crowd.properties
-%attr(-,openfire,openfire) %config(noreplace) %{homedir}/conf/openfire.xml
-%attr(-,openfire,openfire) %config(noreplace) %{homedir}/conf/security.xml
+%defattr(-,openfire,openfire)
+%attr(755, openfire, openfire) %dir %{homedir}
+%dir %{homedir}/bin
+%{homedir}/bin/openfire.sh
+%{homedir}/bin/openfirectl
+%config(noreplace) %{homedir}/bin/embedded-db.rc
+%{homedir}/bin/embedded-db-viewer.sh
+%dir %{homedir}/conf
+%config(noreplace) %{homedir}/conf/openfire.xml
+%config(noreplace) %{homedir}/conf/security.xml
+%config(noreplace) %{homedir}/conf/crowd.properties
+%dir %{homedir}/lib
+%{homedir}/lib/*.jar
+%config(noreplace) %{homedir}/lib/log4j.xml
+# This is symlink to /var/log/openfire
+%{homedir}/logs
+%dir %{homedir}/plugins
+%{homedir}/plugins/search.jar
+%{homedir}/plugins/fastpath.jar
+%{homedir}/plugins/offocus.jar
+%{homedir}/plugins/ofmeet.jar
+%dir %{homedir}/plugins/admin
+%{homedir}/plugins/admin/*
+%dir %{homedir}/resources
+%dir %{homedir}/resources/database
+%{homedir}/resources/database/*.sql
+%dir %{homedir}/resources/database/upgrade
+%dir %{homedir}/resources/database/upgrade/*
+%{homedir}/resources/database/upgrade/*/*
+%dir %{homedir}/resources/i18n
+%{homedir}/resources/i18n/*
+%dir %{homedir}/resources/nativeAuth
+%dir %{homedir}/resources/nativeAuth/linux-i386
+%{homedir}/resources/nativeAuth/linux-i386/*
+%dir %{homedir}/resources/security
+%dir %{homedir}/resources/spank
+%{homedir}/resources/spank/index.html
+%dir %{homedir}/resources/spank/WEB-INF
+%{homedir}/resources/spank/WEB-INF/web.xml
 %config(noreplace) %{homedir}/resources/security/keystore
 %config(noreplace) %{homedir}/resources/security/truststore
 %config(noreplace) %{homedir}/resources/security/client.truststore
-# Other
-/usr/lib/systemd/system/openfire.service
-/usr/lib/tmpfiles.d/openfire.conf
-%{_sbindir}/openfire-start
+
+%doc %attr(-,root,root) documentation/dist/LICENSE.html
+%doc %attr(-,root,root) documentation/dist/README.html
+%doc %attr(-,root,root) documentation/dist/changelog.html
+# System
+%config(noreplace) %{_sysconfdir}/sysconfig/openfire
+%dir /var/run/openfire
+%dir /var/log/openfire
+%attr(-,root,root) /usr/lib/systemd/system/openfire.service
+%attr(-,root,root) /usr/lib/tmpfiles.d/openfire.conf
+%attr(-,root,root) %{_sbindir}/openfire-start
 
 %changelog
 * Thu Aug 31 2017 eGloo <developer@egloo.ca> - 4.1.5-5
