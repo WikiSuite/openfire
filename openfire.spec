@@ -1,9 +1,9 @@
 Summary: Openfire XMPP Server
 Name: openfire
-Version: 4.1.5
-Release: 5
+Version: 4.1.6
+Release: 1
 BuildRoot: %{_builddir}/%{name}-root
-Source0: openfire_src_4_1_5.tar.gz
+Source0: openfire_src_4_1_6.tar.gz
 Source1: openfire-start
 Source2: openfire.service
 Source3: openfire-tmpfiles.conf
@@ -169,6 +169,9 @@ exit 0
 %attr(-,root,root) %{_sbindir}/openfire-start
 
 %changelog
+* Thu Oct 19 2017 eGloo <developer@egloo.ca> - 4.1.6-1
+Updated to 4.1.6
+
 * Thu Aug 31 2017 eGloo <developer@egloo.ca> - 4.1.5-5
 Updated spec file manifest
 
