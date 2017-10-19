@@ -8,11 +8,13 @@ Source1: openfire-start
 Source2: openfire.service
 Source3: openfire-tmpfiles.conf
 Source4: openfire-sysconfig
+Source5: openfire.logrotate
 Source100: ofmeet.jar
 Source101: offocus.jar
 Source102: fastpath.jar
 Requires: java-headless >= 1:1.8.0
 Requires: systemd
+Requires: logrotate
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -53,6 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{prefix}
 # Copy over the main install tree.
 cp -R target/openfire $RPM_BUILD_ROOT%{homedir}
+
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+install -m 644 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/openfire
 
 mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/openfire-start
@@ -167,9 +172,11 @@ exit 0
 %attr(-,root,root) /usr/lib/systemd/system/openfire.service
 %attr(-,root,root) /usr/lib/tmpfiles.d/openfire.conf
 %attr(-,root,root) %{_sbindir}/openfire-start
+%attr(-,root,root) %{_sysconfdir}/logrotate.d/openfire
 
 %changelog
 * Thu Oct 19 2017 eGloo <developer@egloo.ca> - 4.1.6-1
+Added logrotate
 Updated to 4.1.6
 
 * Thu Aug 31 2017 eGloo <developer@egloo.ca> - 4.1.5-5
