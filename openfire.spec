@@ -1,9 +1,9 @@
 Summary: Openfire XMPP Server
 Name: openfire
-Version: 4.1.6
+Version: 4.2.1
 Release: 1
 BuildRoot: %{_builddir}/%{name}-root
-Source0: openfire_src_4_1_6.tar.gz
+Source0: openfire_src_4_2_1.tar.gz
 Source1: openfire-start
 Source2: openfire.service
 Source3: openfire-tmpfiles.conf
@@ -12,6 +12,7 @@ Source5: openfire.logrotate
 Source100: ofmeet.jar
 Source101: offocus.jar
 Source102: fastpath.jar
+Source103: certificatemanager.jar
 Requires: java-headless >= 1:1.8.0
 Requires: systemd
 Requires: logrotate
@@ -92,6 +93,10 @@ ln -sf /var/log/openfire $RPM_BUILD_ROOT%{homedir}/logs
 install -D -m 644 %{SOURCE100} $RPM_BUILD_ROOT%{homedir}/plugins
 install -D -m 644 %{SOURCE101} $RPM_BUILD_ROOT%{homedir}/plugins
 install -D -m 644 %{SOURCE102} $RPM_BUILD_ROOT%{homedir}/plugins
+install -D -m 644 %{SOURCE103} $RPM_BUILD_ROOT%{homedir}/plugins
+
+# Hotdeploy certificate manager plugin
+mkdir -p $RPM_BUILD_ROOT%{homedir}/resources/security/hotdeploy
 
 # We don't really need any of these things.
 rm -rf $RPM_BUILD_ROOT%{homedir}/bin/extra
@@ -140,6 +145,7 @@ exit 0
 %{homedir}/plugins/fastpath.jar
 %{homedir}/plugins/offocus.jar
 %{homedir}/plugins/ofmeet.jar
+%{homedir}/plugins/certificatemanager.jar
 %dir %{homedir}/plugins/admin
 %{homedir}/plugins/admin/*
 %dir %{homedir}/resources
@@ -154,6 +160,7 @@ exit 0
 %dir %{homedir}/resources/nativeAuth/linux-i386
 %{homedir}/resources/nativeAuth/linux-i386/*
 %dir %{homedir}/resources/security
+%dir %{homedir}/resources/security/hotdeploy
 %dir %{homedir}/resources/spank
 %{homedir}/resources/spank/index.html
 %dir %{homedir}/resources/spank/WEB-INF
@@ -175,6 +182,16 @@ exit 0
 %attr(-,root,root) %{_sysconfdir}/logrotate.d/openfire
 
 %changelog
+* Wed Dec 13 2017 eGloo <developer@egloo.ca> - 4.2.1-1
+Updated to 4.2.1
+
+* Fri Dec 8 2017 Guus der Kinderen <guus@goodbytes.nl> - 4.2.0-1
+Updated to 4.2.0
+
+* Thu Nov 30 2017 eGloo <developer@egloo.ca> - 4.2.0-1.beta
+Updated to 4.2.0 Beta
+Added certificate manager plugin
+
 * Thu Oct 19 2017 eGloo <developer@egloo.ca> - 4.1.6-1
 Harmonized spec file with upstream
 Added logrotate
