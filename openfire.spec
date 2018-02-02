@@ -1,7 +1,7 @@
 Summary: Openfire XMPP Server
 Name: openfire
 Version: 4.2.1
-Release: 1
+Release: 2
 BuildRoot: %{_builddir}/%{name}-root
 Source0: openfire_src_4_2_1.tar.gz
 Source1: openfire-start
