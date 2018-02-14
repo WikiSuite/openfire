@@ -1,9 +1,9 @@
 Summary: Openfire XMPP Server
 Name: openfire
-Version: 4.2.1
+Version: 4.2.2
 Release: 2
 BuildRoot: %{_builddir}/%{name}-root
-Source0: openfire_src_4_2_1.tar.gz
+Source0: openfire_src_4_2_2.tar.gz
 Source1: openfire-start
 Source2: openfire.service
 Source3: openfire-tmpfiles.conf
@@ -12,7 +12,7 @@ Source5: openfire.logrotate
 Source100: ofmeet.jar
 Source101: offocus.jar
 Source102: fastpath.jar
-Source103: certificatemanager.jar
+Source103: certificateManager.jar
 Requires: java-headless >= 1:1.8.0
 Requires: systemd
 Requires: logrotate
@@ -145,7 +145,7 @@ exit 0
 %{homedir}/plugins/fastpath.jar
 %{homedir}/plugins/offocus.jar
 %{homedir}/plugins/ofmeet.jar
-%{homedir}/plugins/certificatemanager.jar
+%{homedir}/plugins/certificateManager.jar
 %dir %{homedir}/plugins/admin
 %{homedir}/plugins/admin/*
 %dir %{homedir}/resources
@@ -182,6 +182,9 @@ exit 0
 %attr(-,root,root) %{_sysconfdir}/logrotate.d/openfire
 
 %changelog
+* Tue Feb 13 2018 eGloo <developer@egloo.ca> - 4.2.2-1
+Updated to 4.2.2
+
 * Wed Dec 13 2017 eGloo <developer@egloo.ca> - 4.2.1-1
 Updated to 4.2.1
 
