@@ -1,5 +1,5 @@
 a9fa56332cec9437c751644bf23dbbf65a332605493d4780b97b0da4a5febe7d  openfire_src_4_2_2.tar.gz https://download.igniterealtime.org/openfire/openfire_src_4_2_2.tar.gz
-d48ff69799dfb10218f9f54df659539135a0f368febce367bcf199fa424e823e  ofmeet.jar https://github.com/igniterealtime/ofmeet-openfire-plugin/releases/download/v0.9.2/ofmeet.jar
-502a2411ab0c2e2d7ccf66ffa0d77dc3d87fd8aa87bc711e85dff19f148ce3a7  offocus.jar https://github.com/igniterealtime/ofmeet-openfire-plugin/releases/download/v0.9.2/offocus.jar
+2ae8697c598e98b80cf4eca848f1baab30a3a14b46751c04ca392cb60518550b  ofmeet.jar https://github.com/igniterealtime/ofmeet-openfire-plugin/releases/download/v0.9.3/ofmeet.jar
+174d730a158b8a51187a9b4e2c88c43d3c6f06be46f8ba71a2f31798098844df  offocus.jar https://github.com/igniterealtime/ofmeet-openfire-plugin/releases/download/v0.9.3/offocus.jar
 c6e9dc1bad2f35c08084b21cf9e6c6d5084b278f9eb0c27d4f387db7f111b741  fastpath.jar https://download.igniterealtime.org/openfire/plugins/fastpath.jar
 76907d582617f9577f424bb625579f8d4cfa4128a71b98110a4d25275178d754  certificateManager.jar https://download.igniterealtime.org/openfire/plugins/certificateManager.jar

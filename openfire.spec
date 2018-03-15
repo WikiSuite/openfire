@@ -182,6 +182,10 @@ exit 0
 %attr(-,root,root) %{_sysconfdir}/logrotate.d/openfire
 
 %changelog
+* Thu Mar 8 2018 Guus der Kinderen <guus@goodbytes.nl> - 4.2.2-2
+Updated ofmeet plugin to 0.9.3
+Updated offocus plugin to 0.9.3
+
 * Tue Feb 13 2018 eGloo <developer@egloo.ca> - 4.2.2-1
 Updated to 4.2.2
 
