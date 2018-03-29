@@ -1,9 +1,9 @@
 Summary: Openfire XMPP Server
 Name: openfire
-Version: 4.2.2
-Release: 3%{dist}
+Version: 4.2.3
+Release: 1%{dist}
 BuildRoot: %{_builddir}/%{name}-root
-Source0: openfire_src_4_2_2.tar.gz
+Source0: openfire_src_4_2_3.tar.gz
 Source1: openfire-start
 Source2: openfire.service
 Source3: openfire-tmpfiles.conf
@@ -182,6 +182,9 @@ exit 0
 %attr(-,root,root) %{_sysconfdir}/logrotate.d/openfire
 
 %changelog
+* Thu Mar 29 2018 Guus der Kinderen <guus@goodbytes.nl> - 4.2.3-1
+Updated to 4.2.3
+
 * Thu Mar 8 2018 Guus der Kinderen <guus@goodbytes.nl> - 4.2.2-3
 Updated ofmeet plugin to 0.9.3
 Updated offocus plugin to 0.9.3
