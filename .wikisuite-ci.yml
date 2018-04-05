@@ -41,4 +41,5 @@ test rpm install:
   image: centos
   script:
     - rpm -Uvh http://download2.clearsdn.com/marketplace/cloud/7/noarch/clearos-release-7-current.noarch.rpm
-    - yum -y --enablerepo=clearos-centos,clearos-centos-updates localinstall builds/*.rpm
+    - yum -y --nogpgcheck --enablerepo=clearos-centos,clearos-centos-updates localinstall builds/*.rpm
+    - yum -y --nogpgcheck --enablerepo=clearos-centos,clearos-centos-updates,clearos-updates,clearos-updates-testing,clearos-contribs,clearos-contribs-testing install app-openfire
