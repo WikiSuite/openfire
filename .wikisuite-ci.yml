@@ -32,7 +32,7 @@ build package:
     paths:
     - builds
     - logs
-    expire_in: 1 day
+    expire_in: 1 month
 
 test rpm install:
   stage: test
@@ -43,3 +43,6 @@ test rpm install:
     - rpm -Uvh http://download2.clearsdn.com/marketplace/cloud/7/noarch/clearos-release-7-current.noarch.rpm
     - yum -y --nogpgcheck --enablerepo=clearos-centos,clearos-centos-updates localinstall builds/*.rpm
     - yum -y --nogpgcheck --enablerepo=clearos-centos,clearos-centos-updates,clearos-updates,clearos-updates-testing,clearos-contribs,clearos-contribs-testing install app-openfire
+  only:
+    - master
+    - tags
