@@ -1,4 +1,3 @@
-
 Summary: Openfire XMPP Server
 Name: openfire
 Version: 4.2.3
