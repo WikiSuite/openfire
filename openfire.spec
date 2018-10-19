@@ -1,7 +1,7 @@
 Summary: Openfire XMPP Server
 Name: openfire
 Version: 4.2.3
-Release: 6%{dist}
+Release: 7%{dist}
 BuildRoot: %{_builddir}/%{name}-root
 Source0: openfire_src_4_2_3.tar.gz
 Source1: openfire-start
@@ -13,6 +13,7 @@ Source100: ofmeet.jar
 Source101: offocus.jar
 Source102: fastpath.jar
 Source103: certificateManager.jar
+Source104: monitoring.jar
 Requires: java-headless >= 1:1.8.0
 Requires: systemd
 Requires: logrotate
@@ -94,6 +95,7 @@ install -D -m 644 %{SOURCE100} $RPM_BUILD_ROOT%{homedir}/plugins
 install -D -m 644 %{SOURCE101} $RPM_BUILD_ROOT%{homedir}/plugins
 install -D -m 644 %{SOURCE102} $RPM_BUILD_ROOT%{homedir}/plugins
 install -D -m 644 %{SOURCE103} $RPM_BUILD_ROOT%{homedir}/plugins
+install -D -m 644 %{SOURCE104} $RPM_BUILD_ROOT%{homedir}/plugins
 
 # Hotdeploy certificate manager plugin
 mkdir -p $RPM_BUILD_ROOT%{homedir}/resources/security/hotdeploy
@@ -146,6 +148,7 @@ exit 0
 %{homedir}/plugins/offocus.jar
 %{homedir}/plugins/ofmeet.jar
 %{homedir}/plugins/certificateManager.jar
+%{homedir}/plugins/monitoring.jar
 %dir %{homedir}/plugins/admin
 %{homedir}/plugins/admin/*
 %dir %{homedir}/resources
@@ -180,6 +183,10 @@ exit 0
 %attr(-,root,root) /usr/lib/tmpfiles.d/openfire.conf
 %attr(-,root,root) %{_sbindir}/openfire-start
 %attr(-,root,root) %{_sysconfdir}/logrotate.d/openfire
+
+%changelog
+* Thu Oct 18 2018 Guus der Kinderen <guus@goodbytes.nl> - 4.2.3-7
+Added Monitoring plugin
 
 %changelog
 * Mon Jun 25 2018 Guus der Kinderen <guus@goodbytes.nl> - 4.2.3-5
