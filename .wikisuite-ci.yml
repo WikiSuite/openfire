@@ -1,48 +1,10 @@
 stages:
   - build
   - test
+  - deploy
 
 variables:
-  OS_RELEASE: 7
+  OS_RELEASE: '7.5.0'
 
-build package:
-  stage: build
-  tags:
-    - package-builder
-  image: registry.gitlab.com/wikisuite-playground/package-builder:ws7
-  script:
-    # Prep build directory
-    # Note:  runner re-uses old container?  Hmmm.
-    # https://gitlab.com/gitlab-org/gitlab-runner/issues/2658
-    - rm -rf ../common result
-    - mkdir -p result builds logs
-    # Use common tools just to keep things compatible with the Koji buildsys
-    - git clone https://gitlab.com/netify.ai/netifyos/netifyos-build-tools.git common
-    - mv common ../
-    - ln -s ../common/Makefile Makefile
-    # Build packages
-    - make srpm
-    - mock --old-chroot --resultdir=result *.src.rpm
-    # Copy packags and logs to artifacts
-    - cat result/root.log
-    - mv result/*rpm builds
-    - mv result/*log logs
-  artifacts:
-    when: always
-    paths:
-    - builds
-    - logs
-    expire_in: 1 month
-
-test rpm install:
-  stage: test
-  tags:
-    - package-builder
-  image: centos
-  script:
-    - rpm -Uvh http://download2.clearsdn.com/marketplace/cloud/7/noarch/clearos-release-7-current.noarch.rpm
-    - yum -y --nogpgcheck --enablerepo=clearos-centos,clearos-centos-updates localinstall builds/*.rpm
-    - yum -y --nogpgcheck --enablerepo=clearos-centos,clearos-centos-updates,clearos-updates,clearos-updates-testing,clearos-contribs,clearos-contribs-testing install app-openfire
-  only:
-    - master
-    - tags
+include:
+  - 'https://gitlab.com/egloo.ca/os-manager/package-builder/raw/os7/clearos-ci-template.yml'
